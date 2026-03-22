@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { fetchProducts, fetchProductsByCategory } from '../api';
 import { Product } from '../stores/ProductStore';
@@ -95,8 +95,36 @@ const AdvancedProductsPage: React.FC = () => {
     }
   }, [products, sortParam]);
 
+  const [isStickyBanner, setIsStickyBanner] = useState(false);
+  const [bannerLeft, setBannerLeft] = useState(0);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sidebarRef.current) return;
+      const rect = sidebarRef.current.getBoundingClientRect();
+      
+      if (window.scrollY > 200) {
+        setIsStickyBanner(true);
+        setBannerLeft(rect.left);
+      } else {
+        setIsStickyBanner(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
+    
+    // Initial check
+    handleScroll();
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 relative">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -112,12 +140,44 @@ const AdvancedProductsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex gap-6">
-          {/* Sidebar */}
-          <FilterSidebar selectedCategories={selectedCategories} onChange={handleCategoryChange} />
+        <div className="flex gap-6 items-start">
+          {/* LEFT SIDEBAR */}
+          <div className="w-1/4 relative min-h-[1500px]" ref={sidebarRef}>
+            <FilterSidebar selectedCategories={selectedCategories} onChange={handleCategoryChange} />
+            
+            {/* NavratriBanner */}
+            <div 
+              style={isStickyBanner ? {
+                position: "fixed",
+                top: "50%",
+                transform: "translateY(-50%)",
+                left: bannerLeft,
+                width: "260px",
+                zIndex: 50
+              } : {}}
+              className={`text-white transition-all duration-300 hover:scale-[1.02] ${isStickyBanner ? 'bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 p-5 rounded-xl shadow-2xl animate-[float_3s_ease-in-out_infinite]' : 'mt-6 bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 p-5 rounded-xl shadow-xl'}`}
+            >
+              <div className="font-extrabold text-2xl tracking-wide mb-2 flex items-center gap-2 drop-shadow-sm">
+                <span>🎉</span> Navratri Sale
+              </div>
+              <div className="text-xl font-black drop-shadow-md mb-6 bg-white/20 inline-block px-3 py-1 rounded-lg border border-white/30">
+                Flat 40% OFF
+              </div>
+              <button 
+                onClick={() => {
+                  const section = document.getElementById("products-section");
+                  if (section) section.scrollIntoView({ behavior: "smooth" });
+                }} 
+                className="w-full py-3 bg-white text-orange-600 font-extrabold rounded-xl shadow-lg hover:bg-orange-50 hover:scale-105 transition-all duration-300 uppercase tracking-widest text-sm flex justify-center items-center gap-2"
+              >
+                Shop Now
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+            </div>
+          </div>
 
-          {/* Product Grid / States */}
-          <div className="flex-1 w-full flex flex-col">
+          {/* RIGHT CONTENT */}
+          <div className="w-3/4 flex flex-col" id="products-section">
             {loading ? (
               <div className="flex flex-col items-center justify-center p-24 bg-white rounded-2xl shadow-sm border border-gray-100 min-h-[400px]">
                 <div className="w-12 h-12 border-4 border-amber-200 border-t-amber-500 rounded-full animate-spin mb-4" />

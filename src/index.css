@@ -359,3 +359,9 @@ body {
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-out forwards;
 }
+
+@keyframes float {
+  0% { transform: translateY(-50%) translateY(0px); }
+  50% { transform: translateY(-50%) translateY(-8px); }
+  100% { transform: translateY(-50%) translateY(0px); }
+}
