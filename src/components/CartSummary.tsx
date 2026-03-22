@@ -15,7 +15,7 @@ class CartSummary extends React.Component<Props> {
 
   render() {
     const { cartStore } = this.props.store!;
-    const subtotal = cartStore.totalPrice;
+    const subtotal = cartStore.totalCartValue;
     const discount = subtotal > 500 ? 100 : 0;
     const total = subtotal - discount;
 
@@ -24,7 +24,7 @@ class CartSummary extends React.Component<Props> {
         <h3 className="checkout-panel-title">Cart Summary</h3>
         <div className="checkout-panel-row">
           <span>Items:</span>
-          <span>{cartStore.totalItems}</span>
+          <span>{cartStore.totalCartItems}</span>
         </div>
         <div className="checkout-panel-row">
           <span>Subtotal:</span>

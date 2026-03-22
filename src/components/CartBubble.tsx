@@ -18,13 +18,13 @@ class CartBubble extends React.Component<Props> {
     const { cartStore } = this.props.store!;
     
     // Hide bubble if cart is empty
-    if (cartStore.totalItems === 0) return null;
+    if (cartStore.totalCartItems === 0) return null;
 
     return (
       <div className="cart-bubble" onClick={this.handleClick} style={{ bottom: '30px', right: '30px' }}>
         <p className="bubble-label">Cart</p>
-        <h2 className="bubble-price">{formatCurrency(cartStore.totalPrice)}</h2>
-        <span className="bubble-items">{cartStore.totalItems} items</span>
+        <h2 className="bubble-price">{formatCurrency(cartStore.totalCartValue)}</h2>
+        <span className="bubble-items">{cartStore.totalCartItems} items</span>
       </div>
     );
   }

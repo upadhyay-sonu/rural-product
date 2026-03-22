@@ -11,7 +11,7 @@ interface Props {
 const ProductCard: React.FC<Props> = observer(({ product }) => {
   const navigate = useNavigate();
   const store = useContext(StoreContext);
-  const qty = store?.cartStore.getItemQuantity(product.id) || 0;
+  const qty = store?.cartStore.getCartItemQuantity(product.id) || 0;
 
   return (
     <div 
@@ -46,7 +46,7 @@ const ProductCard: React.FC<Props> = observer(({ product }) => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between mt-4 gap-2 z-10 relative">
+            <div className="flex items-center justify-between mt-4 gap-2 z-10 relative">
             {qty > 0 ? (
               <div 
                 className="flex flex-1 items-center justify-between bg-gray-800 rounded-full px-3 py-1"
@@ -54,14 +54,14 @@ const ProductCard: React.FC<Props> = observer(({ product }) => {
               >
                 <button 
                   className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-700 text-white transition-all duration-200 hover:bg-orange-500 hover:scale-110 active:scale-95 font-bold"
-                  onClick={() => store?.cartStore.decreaseQuantity(product.id)}
+                  onClick={() => store?.cartStore.decreaseCartItemQuantity(product.id)}
                 >
                   -
                 </button>
                 <span className="mx-2 text-white font-bold">{qty}</span>
                 <button 
                   className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-700 text-white transition-all duration-200 hover:bg-orange-500 hover:scale-110 active:scale-95 font-bold"
-                  onClick={() => store?.cartStore.increaseQuantity(product.id)}
+                  onClick={() => store?.cartStore.increaseCartItemQuantity(product.id)}
                 >
                   +
                 </button>
@@ -71,7 +71,7 @@ const ProductCard: React.FC<Props> = observer(({ product }) => {
                 className="flex-1 bg-orange-500 text-white px-4 py-2 rounded-md font-semibold transition-all duration-200 hover:bg-orange-600 hover:scale-105 active:scale-95"
                 onClick={(e) => {
                   e.stopPropagation();
-                  store?.cartStore.addToCart(product.id);
+                  store?.cartStore.addProductToCart(product);
                 }}
               >
                 Add to Cart
@@ -82,7 +82,7 @@ const ProductCard: React.FC<Props> = observer(({ product }) => {
               className="flex-1 bg-green-500 text-white px-4 py-2 rounded-md font-semibold transition-all duration-200 hover:bg-green-600 hover:scale-105 active:scale-95"
               onClick={(e) => {
                 e.stopPropagation();
-                if (qty === 0) store?.cartStore.addToCart(product.id);
+                if (qty === 0) store?.cartStore.addProductToCart(product);
                 navigate('/cart');
               }}
             >

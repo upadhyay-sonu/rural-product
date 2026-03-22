@@ -18,7 +18,7 @@ class OrderSuccessPage extends React.Component<Props> {
 
   render() {
     const { orderStore } = this.props.store!;
-    const latestOrder = orderStore.orders[0];
+    const latestOrder = orderStore.placedOrders[0];
 
     if (!latestOrder) {
       return (
@@ -31,7 +31,7 @@ class OrderSuccessPage extends React.Component<Props> {
       );
     }
 
-    const totalItems = latestOrder.items.reduce((sum, item) => sum + item.quantity, 0);
+    const totalCartItems = latestOrder.orderItems.reduce((sum, cartItem) => sum + cartItem.quantity, 0);
 
     return (
       <motion.div 
@@ -51,7 +51,7 @@ class OrderSuccessPage extends React.Component<Props> {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '1.1rem' }}>
               <span style={{ color: '#9ca3af' }}>Total Items:</span>
-              <span style={{ color: '#f9fafb' }}>{totalItems}</span>
+              <span style={{ color: '#f9fafb' }}>{totalCartItems}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '1.1rem' }}>
               <span style={{ color: '#9ca3af' }}>Payment:</span>
@@ -60,7 +60,7 @@ class OrderSuccessPage extends React.Component<Props> {
             <hr style={{ border: '0', borderTop: '1px dashed #334155', margin: '1.5rem 0' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.4rem' }}>
               <span style={{ color: '#9ca3af', fontWeight: 'bold' }}>Total Paid:</span>
-              <span style={{ color: '#f59e0b', fontWeight: '800' }}>{formatCurrency(latestOrder.total)}</span>
+              <span style={{ color: '#f59e0b', fontWeight: '800' }}>{formatCurrency(latestOrder.orderTotalValue)}</span>
             </div>
           </div>
 

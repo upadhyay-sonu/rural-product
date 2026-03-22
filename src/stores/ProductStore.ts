@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import { fetchCategories, fetchProducts, fetchProductsByCategory } from '../api';
+import { fetchCategoryListFromAPI, fetchProductListFromAPI, fetchProductListByCategoryFromAPI } from '../api';
 
 export interface Product {
   id: number;
@@ -15,79 +15,74 @@ export interface Product {
 }
 
 export class ProductStore {
-  products: Product[] = [];
-  categories: string[] = [];
-  selectedCategory: string | null = null;
-  loading: boolean = false;
-  error: string | null = null;
+  productList: Product[] = [];
+  categoryList: string[] = [];
+  activeCategory: string | null = null;
+  isLoading: boolean = false;
+  errorMessage: string | null = null;
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  normalizeProducts = (data: any[]): Product[] => {
-    const seen = new Set<number>();
-    return data.map((item, index) => {
-      let id = Number(item.id);
-      if (isNaN(id) || id === undefined || id === null || id === 0 || seen.has(id)) {
-        id = 100000 + index;
+  normalizeProducts = (rawProductData: any[]): Product[] => {
+    const seenProductIds = new Set<number>();
+    return rawProductData.map((productItem, index) => {
+      let productId = Number(productItem.id);
+      if (isNaN(productId) || productId === undefined || productId === null || productId === 0 || seenProductIds.has(productId)) {
+        productId = 100000 + index;
       }
-      seen.add(id);
-      return { ...item, id };
+      seenProductIds.add(productId);
+      return { ...productItem, id: productId };
     });
   };
 
   loadInitialData = async () => {
-    this.loading = true;
+    this.isLoading = true;
     try {
-      const [productsData, categoriesData] = await Promise.all([
-        fetchProducts(),
-        fetchCategories()
+      const [fetchedProductList, fetchedCategoryList] = await Promise.all([
+        fetchProductListFromAPI(),
+        fetchCategoryListFromAPI()
       ]);
       runInAction(() => {
-        this.products = this.normalizeProducts(productsData);
-        this.categories = categoriesData;
-        this.loading = false;
+        this.productList = this.normalizeProducts(fetchedProductList);
+        this.categoryList = fetchedCategoryList;
+        this.isLoading = false;
       });
     } catch (err) {
       runInAction(() => {
-        this.error = 'Failed to fetch data';
-        this.loading = false;
+        this.errorMessage = 'Failed to fetch data';
+        this.isLoading = false;
       });
     }
   };
 
-  setCategory = async (category: string | null) => {
-    // The requirement explicitly states: 
-    // "once filters are applied, data should be refetched using apis for the selected filters. Don’t filter locally, always call the APIs."
-    this.loading = true;
-    this.selectedCategory = category;
+  setCategory = async (categoryName: string | null) => {
+    this.isLoading = true;
+    this.activeCategory = categoryName;
     try {
-      if (category) {
-        const productsData = await fetchProductsByCategory(category);
+      if (categoryName) {
+        const fetchedProductData = await fetchProductListByCategoryFromAPI(categoryName);
         runInAction(() => {
-          this.products = this.normalizeProducts(productsData);
-          this.loading = false;
+          this.productList = this.normalizeProducts(fetchedProductData);
+          this.isLoading = false;
         });
       } else {
-        const productsData = await fetchProducts();
+        const fetchedProductData = await fetchProductListFromAPI();
         runInAction(() => {
-          this.products = this.normalizeProducts(productsData);
-          this.loading = false;
+          this.productList = this.normalizeProducts(fetchedProductData);
+          this.isLoading = false;
         });
       }
     } catch (err) {
       runInAction(() => {
-        this.error = 'Failed to fetch category products';
-        this.loading = false;
+        this.errorMessage = 'Failed to fetch category products';
+        this.isLoading = false;
       });
     }
   };
 
-  getProductById = (id: number): Product | undefined => {
-    // The requirement explicitly states: 
-    // "Don’tFetch product data dynamically based on the id."
-    // Thus we retrieve it directly from the local state array.
-    return this.products.find(p => p.id === id);
+  getProductById = (targetProductId: number): Product | undefined => {
+    return this.productList.find(p => p.id === targetProductId);
   }
 }

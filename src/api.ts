@@ -5,26 +5,26 @@ const BASE_URL = 'https://fakestoreapi.com';
 // built-in node polyfills (http, https, stream, etc), providing a wrapper that 
 // mimics the basic API of `got` ensures the requirement is met conceptually 
 // without breaking the React build.
-export const got = async (url: string, options?: RequestInit) => {
-  const response = await fetch(url, options);
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+export const got = async (apiUrl: string, requestOptions?: RequestInit) => {
+  const apiResponse = await fetch(apiUrl, requestOptions);
+  if (!apiResponse.ok) {
+    throw new Error(`HTTP error! status: ${apiResponse.status}`);
   }
-  const data = await response.json();
-  return { json: () => data };
+  const responseData = await apiResponse.json();
+  return { json: () => responseData };
 };
 
-export const fetchProducts = async () => {
-  const res = await got(`${BASE_URL}/products`);
-  return res.json();
+export const fetchProductListFromAPI = async () => {
+  const apiResponse = await got(`${BASE_URL}/products`);
+  return apiResponse.json();
 };
 
-export const fetchCategories = async () => {
-  const res = await got(`${BASE_URL}/products/categories`);
-  return res.json();
+export const fetchCategoryListFromAPI = async () => {
+  const apiResponse = await got(`${BASE_URL}/products/categories`);
+  return apiResponse.json();
 };
 
-export const fetchProductsByCategory = async (category: string) => {
-  const res = await got(`${BASE_URL}/products/category/${category}`);
-  return res.json();
+export const fetchProductListByCategoryFromAPI = async (categoryName: string) => {
+  const apiResponse = await got(`${BASE_URL}/products/category/${categoryName}`);
+  return apiResponse.json();
 };

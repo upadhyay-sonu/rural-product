@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { fetchProducts, fetchProductsByCategory } from '../api';
+import { fetchProductListFromAPI, fetchProductListByCategoryFromAPI } from '../api';
 import { Product } from '../stores/ProductStore';
 import ProductCard from '../components/advanced/ProductCard';
 import FilterSidebar from '../components/advanced/FilterSidebar';
@@ -38,7 +38,7 @@ const AdvancedProductsPage: React.FC = () => {
         let fetchedProducts: any[] = [];
         
         if (selectedCategories.length === 0) {
-          fetchedProducts = await fetchProducts();
+          fetchedProducts = await fetchProductListFromAPI();
         } else {
           // Map abstract filter categories to exact FakeStore API categories
           const apiCategories = new Set<string>();
@@ -48,7 +48,7 @@ const AdvancedProductsPage: React.FC = () => {
             if (cat === "women's clothing") apiCategories.add("women's clothing");
           });
 
-          const promises = Array.from(apiCategories).map(cat => fetchProductsByCategory(cat));
+          const promises = Array.from(apiCategories).map(cat => fetchProductListByCategoryFromAPI(cat));
           const results = await Promise.all(promises);
           // Merge results
           fetchedProducts = results.flat();

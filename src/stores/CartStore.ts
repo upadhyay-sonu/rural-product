@@ -10,88 +10,116 @@ export interface CartItem {
 }
 
 export class CartStore {
-  items: CartItem[] = [];
+  cartItems: CartItem[] = [];
   productStore: ProductStore;
 
   constructor(productStore: ProductStore) {
     makeAutoObservable(this, { productStore: false });
     this.productStore = productStore;
-    this.loadCart();
+    this.loadCartFromLocalStorage();
   }
 
-  loadCart = () => {
+  loadCartData = () => {
     try {
-      const savedCart = window.localStorage.getItem('local-store-cart');
-      if (savedCart) {
-        this.items = JSON.parse(savedCart);
+      const savedCartData = window.localStorage.getItem('local-store-cart');
+      if (savedCartData) {
+        this.cartItems = JSON.parse(savedCartData);
       }
-    } catch (e) {
-      console.error('Failed to load cart from local storage', e);
+    } catch (error) {
+      console.error('Failed to load cart from local storage', error);
     }
   };
 
-  saveCart = () => {
-    window.localStorage.setItem('local-store-cart', JSON.stringify(this.items));
+  saveCartData = () => {
+    window.localStorage.setItem('local-store-cart', JSON.stringify(this.cartItems));
   };
 
-  addToCart = (productId: number) => {
-    const existingItem = this.items.find(item => item.id === productId);
+  loadCartFromLocalStorage = () => {
+    const data = localStorage.getItem("cartItems");
+    if (data) {
+      this.cartItems = JSON.parse(data);
+    } else {
+      this.loadCartData(); // Fallback to old storage if new one is empty
+    }
+  };
+
+  saveCartToLocalStorage = () => {
+    localStorage.setItem("cartItems", JSON.stringify(this.cartItems));
+    this.saveCartData(); // Keep old one in sync just in case
+  };
+
+  addProductToCart = (product: any) => {
+    const existingItem = this.cartItems.find(item => item.id === product.id);
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
-      const product = this.productStore.getProductById(productId);
-      if (product) {
-        this.items.push({ 
-          id: product.id, 
-          title: product.title, 
-          price: product.price, 
-          image: product.image, 
+      this.cartItems.push({
+        ...product,
+        quantity: 1
+      });
+    }
+    this.saveCartToLocalStorage();
+  };
+
+  addCartItem = (targetProductId: number) => {
+    const existingCartItem = this.cartItems.find(cartItem => cartItem.id === targetProductId);
+    if (existingCartItem) {
+      existingCartItem.quantity += 1;
+    } else {
+      const productItem = this.productStore.getProductById(targetProductId);
+      if (productItem) {
+        this.cartItems.push({ 
+          id: productItem.id, 
+          title: productItem.title, 
+          price: productItem.price, 
+          image: productItem.image, 
           quantity: 1 
         });
       }
     }
-    this.saveCart();
+    this.saveCartToLocalStorage();
   };
 
-  increaseQuantity = (productId: number) => {
-    const existingItem = this.items.find(item => item.id === productId);
-    if (existingItem) {
-      existingItem.quantity += 1;
-      this.saveCart();
+  increaseCartItemQuantity = (targetProductId: number) => {
+    const existingCartItem = this.cartItems.find(cartItem => cartItem.id === targetProductId);
+    if (existingCartItem) {
+      existingCartItem.quantity += 1;
+      this.saveCartToLocalStorage();
     }
   };
 
-  decreaseQuantity = (productId: number) => {
-    const existingItem = this.items.find(item => item.id === productId);
-    if (existingItem) {
-      if (existingItem.quantity > 1) {
-        existingItem.quantity -= 1;
+  decreaseCartItemQuantity = (targetProductId: number) => {
+    const existingCartItem = this.cartItems.find(cartItem => cartItem.id === targetProductId);
+    if (existingCartItem) {
+      if (existingCartItem.quantity > 1) {
+        existingCartItem.quantity -= 1;
       } else {
-        this.items = this.items.filter(item => item.id !== productId);
+        this.cartItems = this.cartItems.filter(cartItem => cartItem.id !== targetProductId);
       }
-      this.saveCart();
+      this.saveCartToLocalStorage();
     }
   };
 
-  removeFromCart = (productId: number) => {
-    this.items = this.items.filter(item => item.id !== productId);
-    this.saveCart();
+  removeCartItem = (targetProductId: number) => {
+    this.cartItems = this.cartItems.filter(cartItem => cartItem.id !== targetProductId);
+    this.saveCartToLocalStorage();
   };
 
-  clearCart = () => {
-    this.items = [];
-    this.saveCart();
+  clearAllCartItems = () => {
+    this.cartItems = [];
+    this.saveCartToLocalStorage();
   };
 
-  getItemQuantity = (productId: number): number => {
-    const existingItem = this.items.find(item => item.id === productId);
-    return existingItem ? existingItem.quantity : 0;
+  getCartItemQuantity = (targetProductId: number): number => {
+    const existingCartItem = this.cartItems.find(cartItem => cartItem.id === targetProductId);
+    return existingCartItem ? existingCartItem.quantity : 0;
   };
-  get totalItems() {
-    return this.items.reduce((total, item) => total + item.quantity, 0);
+  
+  get totalCartItems() {
+    return this.cartItems.reduce((totalQuantity, cartItem) => totalQuantity + cartItem.quantity, 0);
   }
 
-  get totalPrice() {
-    return this.items.reduce((total, item) => total + item.price * item.quantity, 0);
+  get totalCartValue() {
+    return this.cartItems.reduce((totalPriceAccumulator, cartItem) => totalPriceAccumulator + cartItem.price * cartItem.quantity, 0);
   }
 }

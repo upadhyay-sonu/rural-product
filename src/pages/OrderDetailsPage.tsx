@@ -58,7 +58,7 @@ class OrderDetailsPage extends React.Component<Props> {
             </div>
             <div style={{ flex: 1, minWidth: '200px' }}>
               <div style={{ color: '#9ca3af', textTransform: 'uppercase', fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '0.5rem', letterSpacing: '1px' }}>Total</div>
-              <div style={{ color: '#f59e0b', fontSize: '1.2rem', fontWeight: '800' }}>{formatCurrency(order.total)}</div>
+              <div style={{ color: '#f59e0b', fontSize: '1.2rem', fontWeight: '800' }}>{formatCurrency(order.orderTotalValue)}</div>
             </div>
              <div style={{ flex: 1, minWidth: '200px' }}>
               <div style={{ color: '#9ca3af', textTransform: 'uppercase', fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '0.5rem', letterSpacing: '1px' }}>Order ID #</div>
@@ -72,15 +72,15 @@ class OrderDetailsPage extends React.Component<Props> {
               <div style={{ background: '#111827', borderRadius: '12px', border: '1px solid #334155' }}>
                 <h3 style={{ borderBottom: '1px solid #334155', margin: 0, padding: '1.5rem 2rem', fontSize: '1.3rem' }}>Products Delivered</h3>
                 <div style={{ padding: '0 2rem' }}>
-                  {order.items.map(item => (
-                    <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1.5rem 0', borderBottom: '1px solid #1e293b' }}>
-                      <img src={item.image} alt={item.title} style={{ width: '80px', height: '80px', objectFit: 'contain', background: '#fff', borderRadius: '8px', padding: '0.5rem' }} />
+                  {order.orderItems.map(orderItem => (
+                    <div key={orderItem.id} style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1.5rem 0', borderBottom: '1px solid #1e293b' }}>
+                      <img src={orderItem.image} alt={orderItem.title} style={{ width: '80px', height: '80px', objectFit: 'contain', background: '#fff', borderRadius: '8px', padding: '0.5rem' }} />
                       <div style={{ flex: 1 }}>
-                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.15rem' }}>{item.title}</h4>
-                        <div style={{ color: '#9ca3af', fontSize: '1rem' }}>Quantity: <span style={{ color: '#f9fafb', fontWeight: 'bold' }}>{item.quantity}</span></div>
+                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.15rem' }}>{orderItem.title}</h4>
+                        <div style={{ color: '#9ca3af', fontSize: '1rem' }}>Quantity: <span style={{ color: '#f9fafb', fontWeight: 'bold' }}>{orderItem.quantity}</span></div>
                       </div>
                       <div style={{ fontWeight: '800', fontSize: '1.25rem', color: '#f59e0b' }}>
-                        {formatCurrency(item.price * item.quantity)}
+                        {formatCurrency(orderItem.price * orderItem.quantity)}
                       </div>
                     </div>
                   ))}

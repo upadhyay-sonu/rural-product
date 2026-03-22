@@ -13,7 +13,7 @@ interface Props extends RouteComponentProps {
 class CartPage extends React.Component<Props> {
   handleRemove = (id: number) => {
     const { cartStore } = this.props.store!;
-    cartStore.removeFromCart(id);
+    cartStore.removeCartItem(id);
   }
 
   handleBack = () => {
@@ -41,7 +41,7 @@ class CartPage extends React.Component<Props> {
           <h1>Your Cart</h1>
         </div>
 
-        {cartStore.items.length === 0 ? (
+        {cartStore.cartItems.length === 0 ? (
           <div className="cart-empty-state">
             <span style={{ fontSize: '3rem', display: 'block', marginBottom: '1rem' }}>🛒</span>
             <h2>Your cart is empty</h2>
@@ -51,30 +51,30 @@ class CartPage extends React.Component<Props> {
           <div className="cart-content">
             <div className="cart-layout">
               <div className="cart-items-list">
-                {cartStore.items.map(item => (
-                <div key={item.id} className="cart-item-card">
+                {cartStore.cartItems.map(cartItem => (
+                <div key={cartItem.id} className="cart-item-card">
                   <div className="cart-item-image-wrapper">
-                    <img src={item.image} alt={item.title} className="cart-item-image" />
+                    <img src={cartItem.image} alt={cartItem.title} className="cart-item-image" />
                   </div>
                   <div className="cart-item-details">
-                    <h3 className="cart-item-title">{item.title}</h3>
-                    <div className="cart-item-price">{formatCurrency(item.price)}</div>
+                    <h3 className="cart-item-title">{cartItem.title}</h3>
+                    <div className="cart-item-price">{formatCurrency(cartItem.price)}</div>
                   </div>
                   <div className="cart-item-actions">
                     <div className="cart-item-quantity-controls">
                       <button 
                         className="qty-btn" 
-                        onClick={() => cartStore.decreaseQuantity(item.id)}
+                        onClick={() => cartStore.decreaseCartItemQuantity(cartItem.id)}
                       >-</button>
-                      <span className="qty-value">{item.quantity}</span>
+                      <span className="qty-value">{cartItem.quantity}</span>
                       <button 
                         className="qty-btn" 
-                        onClick={() => cartStore.increaseQuantity(item.id)}
+                        onClick={() => cartStore.increaseCartItemQuantity(cartItem.id)}
                       >+</button>
                     </div>
                     <button 
                       className="cart-remove-btn" 
-                      onClick={() => this.handleRemove(item.id)}
+                      onClick={() => this.handleRemove(cartItem.id)}
                     >
                       Remove
                     </button>
@@ -88,11 +88,11 @@ class CartPage extends React.Component<Props> {
                 <h3 className="checkout-panel-title">Order Summary</h3>
                 <div className="checkout-panel-row">
                   <span>Items:</span>
-                  <span>{cartStore.totalItems}</span>
+                  <span>{cartStore.totalCartItems}</span>
                 </div>
                 <div className="checkout-panel-row checkout-panel-total">
                   <span>Total:</span>
-                  <span className="total-accent">{formatCurrency(cartStore.totalPrice)}</span>
+                  <span className="total-accent">{formatCurrency(cartStore.totalCartValue)}</span>
                 </div>
                 <button 
                   className="btn-primary checkout-action-btn" 

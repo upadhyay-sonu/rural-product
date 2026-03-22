@@ -11,15 +11,15 @@ interface Props {
 
 class CartItem extends React.Component<Props> {
   handleIncrease = () => {
-    this.props.store!.cartStore.increaseQuantity(this.props.item.id);
+    this.props.store!.cartStore.increaseCartItemQuantity(this.props.item.id);
   };
 
   handleDecrease = () => {
-    this.props.store!.cartStore.decreaseQuantity(this.props.item.id);
+    this.props.store!.cartStore.decreaseCartItemQuantity(this.props.item.id);
   };
 
   handleRemove = () => {
-    this.props.store!.cartStore.removeFromCart(this.props.item.id);
+    this.props.store!.cartStore.removeCartItem(this.props.item.id);
   };
 
   render() {

@@ -21,7 +21,7 @@ class ProductDetail extends React.Component<Props> {
     // we make sure products are loaded. If not loaded, we load initial data.
     // However, we don't fetch by ID. We fetch the entire list.
     const { productStore } = this.props.store!;
-    if (productStore.products.length === 0) {
+    if (productStore.productList.length === 0) {
       productStore.loadInitialData();
     }
   }
@@ -35,18 +35,18 @@ class ProductDetail extends React.Component<Props> {
     const { productStore, cartStore } = this.props.store!;
     const product = productStore.getProductById(Number(id));
     if (product) {
-      cartStore.addToCart(product.id);
+      cartStore.addProductToCart(product);
     }
   }
 
   handleIncrease = () => {
     const { id } = this.props.params;
-    this.props.store!.cartStore.increaseQuantity(Number(id));
+    this.props.store!.cartStore.increaseCartItemQuantity(Number(id));
   };
 
   handleDecrease = () => {
     const { id } = this.props.params;
-    this.props.store!.cartStore.decreaseQuantity(Number(id));
+    this.props.store!.cartStore.decreaseCartItemQuantity(Number(id));
   };
 
   handleBuyNow = () => {
@@ -55,8 +55,8 @@ class ProductDetail extends React.Component<Props> {
     const product = productStore.getProductById(Number(id));
     
     if (product) {
-      if (cartStore.getItemQuantity(product.id) === 0) {
-        cartStore.addToCart(product.id);
+      if (cartStore.getCartItemQuantity(product.id) === 0) {
+        cartStore.addProductToCart(product);
       }
       this.props.navigate('/cart');
     }
@@ -66,7 +66,7 @@ class ProductDetail extends React.Component<Props> {
     const { id } = this.props.params;
     const { productStore, cartStore } = this.props.store!;
     
-    if (productStore.loading) {
+    if (productStore.isLoading) {
       return (
         <div className="loader-container">
           <div className="spinner"></div>
@@ -108,10 +108,10 @@ class ProductDetail extends React.Component<Props> {
           <div className="detail-price">{formatCurrency(product.price)}</div>
           
           <div className="detail-actions-container">
-            {cartStore.getItemQuantity(product.id) > 0 ? (
+            {cartStore.getCartItemQuantity(product.id) > 0 ? (
               <div className="grid-cart-controls" style={{ maxWidth: '200px', margin: 0 }}>
                 <button className="grid-qty-btn" onClick={this.handleDecrease}>-</button>
-                <span className="grid-qty-val">{cartStore.getItemQuantity(product.id)}</span>
+                <span className="grid-qty-val">{cartStore.getCartItemQuantity(product.id)}</span>
                 <button className="grid-qty-btn" onClick={this.handleIncrease}>+</button>
               </div>
             ) : (

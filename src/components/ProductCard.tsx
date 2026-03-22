@@ -16,6 +16,7 @@ interface Product {
 interface Props extends RouteComponentProps {
   store?: RootStore;
   product: Product;
+  handleAddToCart?: (product: Product) => void;
 }
 
 class ProductCard extends React.Component<Props> {
@@ -25,32 +26,36 @@ class ProductCard extends React.Component<Props> {
 
   handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    this.props.store!.cartStore.addToCart(this.props.product.id);
+    this.props.store!.cartStore.addCartItem(this.props.product.id);
   }
 
   handleBuyNow = (e: React.MouseEvent) => {
     e.stopPropagation();
     const { cartStore } = this.props.store!;
-    if (cartStore.getItemQuantity(this.props.product.id) === 0) {
-      cartStore.addToCart(this.props.product.id);
+    if (cartStore.getCartItemQuantity(this.props.product.id) === 0) {
+      if (this.props.handleAddToCart) {
+        this.props.handleAddToCart(this.props.product);
+      } else {
+        cartStore.addProductToCart(this.props.product);
+      }
     }
     this.props.navigate('/cart');
   }
 
   handleIncrease = (e: React.MouseEvent) => {
     e.stopPropagation();
-    this.props.store!.cartStore.increaseQuantity(this.props.product.id);
+    this.props.store!.cartStore.increaseCartItemQuantity(this.props.product.id);
   }
 
   handleDecrease = (e: React.MouseEvent) => {
     e.stopPropagation();
-    this.props.store!.cartStore.decreaseQuantity(this.props.product.id);
+    this.props.store!.cartStore.decreaseCartItemQuantity(this.props.product.id);
   }
 
   render() {
-    const { product, store } = this.props;
+    const { product, store, handleAddToCart } = this.props;
     const cartStore = store!.cartStore;
-    const qty = cartStore.getItemQuantity(product.id);
+    const qty = cartStore.getCartItemQuantity(product.id);
 
     return (
       <div className="product-card" onClick={this.handleProductClick}>
@@ -69,7 +74,17 @@ class ProductCard extends React.Component<Props> {
                 <button className="grid-qty-btn" onClick={this.handleIncrease}>+</button>
               </div>
             ) : (
-              <button className="btn-secondary" onClick={this.handleAddToCart}>
+              <button 
+                className="btn-secondary" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (handleAddToCart) {
+                    handleAddToCart(product);
+                  } else {
+                    this.handleAddToCart(e);
+                  }
+                }}
+              >
                 Add to Cart
               </button>
             )}

@@ -13,14 +13,14 @@ interface Props extends RouteComponentProps {
 class Home extends React.Component<Props> {
   componentDidMount() {
     const { productStore } = this.props.store!;
-    if (productStore.products.length === 0) {
+    if (productStore.productList.length === 0) {
       productStore.loadInitialData();
     }
   }
 
   handleCategoryClick = (category: string | null) => {
     const { productStore } = this.props.store!;
-    if (productStore.selectedCategory === category) {
+    if (productStore.activeCategory === category) {
       productStore.setCategory(null);
     } else {
       productStore.setCategory(category);
@@ -35,6 +35,11 @@ class Home extends React.Component<Props> {
     const el = document.getElementById('products-section');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   }
+
+  handleAddToCart = (product: any) => {
+    const { cartStore } = this.props.store!;
+    cartStore.addProductToCart(product);
+  };
 
   render() {
     const { productStore } = this.props.store!;
@@ -61,15 +66,15 @@ class Home extends React.Component<Props> {
 
         <div id="products-section" className="filters-container">
           <button 
-            className={`filter-btn ${productStore.selectedCategory === null ? 'active' : ''}`}
+            className={`filter-btn ${productStore.activeCategory === null ? 'active' : ''}`}
             onClick={() => this.handleCategoryClick(null)}
           >
             All Filters
           </button>
-          {productStore.categories.map(cat => (
+          {productStore.categoryList.map((cat: string) => (
             <button 
               key={cat}
-              className={`filter-btn ${productStore.selectedCategory === cat ? 'active' : ''}`}
+              className={`filter-btn ${productStore.activeCategory === cat ? 'active' : ''}`}
               onClick={() => this.handleCategoryClick(cat)}
             >
               {cat}
@@ -77,14 +82,14 @@ class Home extends React.Component<Props> {
           ))}
         </div>
 
-        {productStore.loading ? (
+        {productStore.isLoading ? (
           <div className="loader-container">
             <div className="spinner"></div>
           </div>
         ) : (
           <div className="products-grid">
-            {productStore.products.map(product => (
-              <ProductCard key={product.id} product={product} />
+            {productStore.productList.map((product: any) => (
+              <ProductCard key={product.id} product={product} handleAddToCart={this.handleAddToCart} />
             ))}
           </div>
         )}

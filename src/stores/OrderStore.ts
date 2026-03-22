@@ -10,8 +10,8 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
-  items: OrderItem[];
-  total: number;
+  orderItems: OrderItem[];
+  orderTotalValue: number;
   paymentMethod: string;
   address: {
     name: string;
@@ -24,40 +24,40 @@ export interface Order {
 }
 
 export class OrderStore {
-  orders: Order[] = [];
+  placedOrders: Order[] = [];
 
   constructor() {
     makeAutoObservable(this);
-    this.loadOrders();
+    this.loadOrderHistory();
   }
 
-  loadOrders = () => {
+  loadOrderHistory = () => {
     try {
-      const savedOrders = window.localStorage.getItem('local-store-orders');
-      if (savedOrders) {
-        this.orders = JSON.parse(savedOrders);
+      const savedOrderData = window.localStorage.getItem('local-store-orders');
+      if (savedOrderData) {
+        this.placedOrders = JSON.parse(savedOrderData);
       }
     } catch (e) {
       console.error('Failed to load orders', e);
     }
   };
 
-  saveOrders = () => {
-    window.localStorage.setItem('local-store-orders', JSON.stringify(this.orders));
+  saveOrderHistory = () => {
+    window.localStorage.setItem('local-store-orders', JSON.stringify(this.placedOrders));
   };
 
-  addOrder = (order: Omit<Order, 'id' | 'createdAt'>) => {
-    const newOrder: Order = {
-      ...order,
+  processNewOrder = (newOrderData: Omit<Order, 'id' | 'createdAt'>) => {
+    const freshOrder: Order = {
+      ...newOrderData,
       id: Math.random().toString(36).substr(2, 9).toUpperCase(),
       createdAt: Date.now()
     };
-    this.orders.unshift(newOrder);
-    this.saveOrders();
-    return newOrder;
+    this.placedOrders.unshift(freshOrder);
+    this.saveOrderHistory();
+    return freshOrder;
   };
 
-  getOrderById = (id: string) => {
-    return this.orders.find(o => o.id === id);
+  getOrderById = (orderId: string) => {
+    return this.placedOrders.find(o => o.id === orderId);
   };
 }

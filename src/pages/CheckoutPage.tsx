@@ -53,20 +53,20 @@ class CheckoutPage extends React.Component<Props> {
 
     const { cartStore, orderStore } = this.props.store!;
     const { name, phone, address, city, pincode, paymentMethod } = this.state;
-    const subtotal = cartStore.totalPrice;
+    const subtotal = cartStore.totalCartValue;
     const discount = subtotal > 500 ? 100 : 0;
     const total = subtotal - discount;
 
     const finalizeOrder = () => {
       // 1. Log order to Store
-      orderStore.addOrder({
-        items: [...cartStore.items],
-        total: Math.max(0, total),
+      orderStore.processNewOrder({
+        orderItems: [...cartStore.cartItems],
+        orderTotalValue: Math.max(0, total),
         paymentMethod,
         address: { name, phone, address, city, pincode }
       });
       // 2. Clear Cart completely
-      cartStore.clearCart();
+      cartStore.clearAllCartItems();
       // 3. Reroute to success payload
       this.props.navigate('/order-success');
     };
@@ -86,13 +86,13 @@ class CheckoutPage extends React.Component<Props> {
   render() {
     const { cartStore } = this.props.store!;
     const { name, phone, address, city, pincode, paymentMethod, errors, loading } = this.state;
-    const subtotal = cartStore.totalPrice;
+    const subtotal = cartStore.totalCartValue;
     const discount = subtotal > 500 ? 100 : 0;
     const total = subtotal - discount;
 
     const isCOD = paymentMethod === 'COD';
 
-    if (cartStore.totalItems === 0) {
+    if (cartStore.totalCartItems === 0) {
       return (
         <div style={{ textAlign: 'center', paddingTop: '4rem' }}>
           <h2>No items to checkout</h2>
@@ -174,10 +174,10 @@ class CheckoutPage extends React.Component<Props> {
             <div className={styles.panel}>
               <h3 className={styles.panelTitle}>Order Summary</h3>
               <div className={styles.itemsPreview}>
-                {cartStore.items.map(item => (
-                  <div key={item.id} className={styles.previewRow}>
-                    <span>{item.quantity}x {item.title.substring(0, 20)}{item.title.length > 20 ? '...' : ''}</span>
-                    <span>{formatCurrency(item.price * item.quantity)}</span>
+                {cartStore.cartItems.map(cartItem => (
+                  <div key={cartItem.id} className={styles.previewRow}>
+                    <span>{cartItem.quantity}x {cartItem.title.substring(0, 20)}{cartItem.title.length > 20 ? '...' : ''}</span>
+                    <span>{formatCurrency(cartItem.price * cartItem.quantity)}</span>
                   </div>
                 ))}
               </div>
