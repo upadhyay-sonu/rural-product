@@ -90,42 +90,64 @@ Make sure you have:
 
 Node.js (v14 or higher recommended)
 npm or yarn
+
 A modern browser (Chrome recommended)
+
 📥 Step 1: Clone the Repository
 git clone https://github.com/upadhyay-sonu/Rural-products
+
 cd Rural farming food
+
 📦 Step 2: Install Dependencies
+
 npm install
+
 ▶️ Step 3: Run the Application
+
 npm start
+
 🌐 Step 4: Open in Browser
+
+
 http://localhost:3000/
 
 👉 The app will automatically redirect to:
 
 /advanced-products
 
-🏗️ Step 5: Build for Production (Optional)
+🏗️ Step 5: Build for Production 
 npm run build
 Creates optimized build in /build folder
 Ready for deployment
 
 📜 Available Scripts
 Command	Description
+
 npm start	Runs development server
+
 npm test	Runs test cases
+
 npm run build	Creates production build
-npm run eject	Exposes config (irreversible)
+
+npm run eject	Exposes config 
 
 📁 Project Structure
 src/
+
 │── components/        # Reusable UI components
+
 │── pages/             # Main pages (Home, Product, Cart, Checkout)
+
 │── store/             # MobX store (cart management)
+
 │── context/           # Context API wrapper
+
 │── services/          # API layer (data fetching)
+
 │── styles/            # Tailwind + global styles
+
 │── App.tsx            # Main routing
+
 │── index.tsx          # Entry point
 
 🔄 API Integration
@@ -181,5 +203,7 @@ Focus on performance and UX
 Sonu Upadhyaya
 
 📚 Learn More
+
 React Docs: https://reactjs.org/
+
 CRA Docs: https://facebook.github.io/create-react-app/docs/getting-started
