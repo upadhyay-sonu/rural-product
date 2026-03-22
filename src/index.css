@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --bg-main: #0f172a;
   --bg-section: #1e293b;
@@ -345,4 +349,13 @@ body {
   .cart-content { grid-template-columns: 1fr; gap: 3rem; }
   .cart-item-card { flex-direction: column; align-items: flex-start; padding: 1.25rem; }
   .cart-item-actions { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
 }
