@@ -194,25 +194,40 @@ No user authentication required
 Users interact as guests
 
 🚫 Limitations
+
 No backend (frontend-only application)
+
 No real payment gateway integration
+
 Limited product categories (API restriction)
+
 No order history storage
 
 ✨ Additional Features (Beyond Assignment)
+
 Premium UI (dark + orange theme)
+
 Advanced filtering with URL sharing
+
 Enhanced cart functionality (+ / - controls)
+
 Animated UI interactions
+
 Improved UX beyond basic requirements
+
 
 🎯 Key Highlights 
 
 Scalable frontend architecture
+
 Clean and maintainable code
+
 Real-world e-commerce design
+
 Advanced state management using MobX
+
 Focus on performance and UX
+
 
 👨‍💻 Author
 Sonu Upadhyaya
