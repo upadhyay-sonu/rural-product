@@ -162,6 +162,21 @@ Important Note
 Filtering is done using API calls
 No local filtering (as per requirement)
 
+
+ 🧪 End-to-End Testing (Cypress)
+
+This project includes **End-to-End
+(E2E) testing** using Cypress to ensure reliability of core features like product listing, cart functionality, and navigation.
+
+---
+
+📦 Install Cypress
+
+
+npm install cypress --save-dev
+
+
+
 💾 Cart Persistence
 Cart is stored in localStorage
 Automatically restored on reload
