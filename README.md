@@ -8,77 +8,137 @@ This project demonstrates real-world frontend architecture, advanced UI/UX desig
 This application allows users to:
 
 Browse products from an external API
+
 Filter and sort products dynamically
+
 View detailed product information
+
 Add products to cart with quantity control
+
 Experience smooth animations and responsive design
 
 The project focuses on clean architecture, scalability, and user experience.
 
 🚀 Key Features
+
 🛍️ Product Management
+
 Product listing using API (FakeStoreAPI)
+
 Dynamic product detail page using routing
+
 High-quality product cards with animations
 
+
 🔍 Filtering & Sorting
+
 Category-based filtering:
+
 Electronics
+
 Men's Clothing
+
 Women's Clothing
+
 Sorting options:
+
 Price (Low → High)
+
 Price (High → Low)
+
 Newest First
+
 URL-based state:
+
 Filters persist after refresh
+
 Back/forward navigation supported
+
 Shareable filtered links
+
 🛒 Cart System
+
 Add to cart functionality
+
 Quantity control (+ / -)
+
 Real-time price calculation
+
 Persistent cart using localStorage
 
+
 💳 Checkout System
+
 Mock checkout flow
+
 Order summary display
+
 Payment mode selection (UI only)
 
+
 🎨 UI / UX Design
+
 Premium dark + orange theme
+
 Clean, modern card-based layout
+
 Smooth hover and transition effects
+
 Micro-interactions for better UX
 
 🎬 Animations
+
 Card hover animations (lift + glow)
+
 Button click feedback (scale)
+
 Smooth transitions between UI states
 
+
 📱 Responsiveness
+
 Mobile-first design
+
 Fully responsive grid layout
+
 Optimized for desktop, tablet, and mobile
 
+
 ♿ Accessibility
+
 Semantic HTML elements (main, section, nav)
+
 Accessible buttons (aria-label)
+
 Proper image alt text
 
+
 🛠️ Tech Stack
+
 Frontend
+
 React (Create React App)
+
 TypeScript
+
 React Router DOM
+
 State Management
+
 MobX
+
 Context API
+
 Styling
+
 Tailwind CSS
+
 API
+
 FakeStoreAPI
+
 https://fakestoreapi.com/
+
 
 ⚙️ Setup & Installation Guide
 
